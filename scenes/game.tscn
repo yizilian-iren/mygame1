@@ -131,7 +131,7 @@ metadata/_edit_lock_ = true
 
 [node name="player" parent="." instance=ExtResource("2_yqjtg")]
 process_mode = 1
-position = Vector2(-190, 84)
+position = Vector2(-40, 66)
 
 [node name="level up" type="Label" parent="."]
 visible = false
