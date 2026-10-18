@@ -1,5 +1,6 @@
 extends CanvasLayer
 # 手机上的虚拟摇杆和按钮：只在触屏设备上显示（或第一次收到触摸时显示）。
+# 两个都在左手（D-002）：SWITCH 在左下角，左半屏其余地方是浮动摇杆；右半屏不放控件，看得清右边来的怪。
 # 摇杆按下 left / right / up / down，按钮发 switch_weapon，和键盘走同一套 Input action，player.gd 不用改。
 
 const STICK_RADIUS := 90.0
@@ -34,14 +35,14 @@ func _show() -> void:
 	visible = true
 	var hint = get_node_or_null("../CanvasLayer/Label")
 	if hint:
-		hint.text = "move : left stick\nswitch : right button"
+		hint.text = "HINT_TOUCH"  # i18n/strings.csv 的 key
 
 
 func _layout() -> void:
 	var size = get_viewport().get_visible_rect().size
-	stick_rest = Vector2(170, size.y - 150)
-	button_pos = Vector2(size.x - 150, size.y - 150)
-	fullscreen_pos = Vector2(size.x - 60, 60)
+	button_pos = Vector2(115, size.y - 115)
+	stick_rest = Vector2(330, size.y - 160)
+	fullscreen_pos = Vector2(size.x - 48, 104)  # 右上角语言按钮的下面
 	if stick_touch == -1:
 		stick_center = stick_rest
 		stick_knob = stick_rest
