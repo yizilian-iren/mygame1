@@ -1,11 +1,12 @@
-# Publish the Godot web export (Bulids/Web) to GitHub Pages: https://yizilian-iren.github.io/mygame1/
-# The export has thread support off, so it runs without cross-origin isolation headers (Pages can't set them).
+# Export the web build in Actions and publish it to GitHub Pages:
+# https://yizilian-iren.github.io/mygame1/
+# Thread support is off in the Web preset, so it runs without cross-origin
+# isolation headers (Pages can't set them).
 name: Pages
 
 on:
   push:
     branches: [main]
-    paths: ['Bulids/Web/**', '.github/workflows/pages.yml']
   workflow_dispatch:
 
 permissions:
@@ -25,6 +26,16 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v7
+      - uses: ./.github/actions/setup-godot
+        with:
+          templates: web_nothreads_release.zip
+      - name: Export Web
+        run: |
+          mkdir -p Bulids/Web
+          godot --headless --path . --import
+          godot --headless --path . --export-release "Web" Bulids/Web/index.html 2>&1 | tee export.log
+          test -s Bulids/Web/index.pck && test -s Bulids/Web/index.wasm
+          ! grep -E "^ERROR" export.log
       - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v5
         with:

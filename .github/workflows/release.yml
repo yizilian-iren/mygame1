@@ -1,0 +1,47 @@
+# Push a tag like v0.2 to export the desktop builds and attach them to a
+# GitHub Release. macOS is ad-hoc signed only (not notarized): first launch
+# needs right-click → Open.
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  desktop:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/setup-godot
+        with:
+          templates: windows_release_x86_64.exe macos.zip
+      - name: Export Windows and macOS
+        run: |
+          mkdir -p Bulids/Windows Bulids/macOS
+          godot --headless --path . --import
+          godot --headless --path . --export-release "Windows Desktop" Bulids/Windows/mygame1.exe 2>&1 | tee export-win.log
+          godot --headless --path . --export-release "macOS" Bulids/macOS/mygame1-macos.zip 2>&1 | tee export-mac.log
+          test -s Bulids/Windows/mygame1.exe && test -s Bulids/macOS/mygame1-macos.zip
+          ! grep -E "^ERROR" export-win.log export-mac.log
+          name="mygame1-${GITHUB_REF_NAME}"
+          (cd Bulids/Windows && zip -q -r "../../${name}-windows.zip" .)
+          mv Bulids/macOS/mygame1-macos.zip "${name}-macos.zip"
+          ls -la *.zip
+      - name: Publish the release
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # A tag with a dash (v0.2-rc1) is a test build: mark it as a prerelease.
+          pre=""; case "$GITHUB_REF_NAME" in *-*) pre="--prerelease";; esac
+          gh release create "$GITHUB_REF_NAME" mygame1-*-windows.zip mygame1-*-macos.zip --generate-notes --title "$GITHUB_REF_NAME" $pre
+      - name: Keep the builds as an artifact (manual runs)
+        if: "!startsWith(github.ref, 'refs/tags/')"
+        uses: actions/upload-artifact@v7
+        with:
+          name: desktop-builds
+          path: mygame1-*.zip

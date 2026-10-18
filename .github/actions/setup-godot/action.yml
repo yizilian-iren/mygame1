@@ -1,0 +1,41 @@
+# Installs headless Godot and only the export templates a job needs (the full
+# template package is about 1 GB), cached between runs.
+name: Set up Godot
+description: Godot editor (Linux, headless) plus selected export templates
+inputs:
+  version:
+    description: Godot version, as in the release tag without -stable
+    default: "4.5.1"
+  templates:
+    description: Template file names inside the .tpz, space separated
+    required: true
+runs:
+  using: composite
+  steps:
+    - id: cache
+      uses: actions/cache@v6
+      with:
+        path: |
+          ~/godot-bin
+          ~/.local/share/godot/export_templates
+        key: godot-${{ inputs.version }}-${{ inputs.templates }}
+    - if: steps.cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: |
+        set -euo pipefail
+        base=https://github.com/godotengine/godot/releases/download/${{ inputs.version }}-stable
+        mkdir -p ~/godot-bin
+        curl -fsSL -o /tmp/godot.zip "$base/Godot_v${{ inputs.version }}-stable_linux.x86_64.zip"
+        unzip -q -o /tmp/godot.zip -d ~/godot-bin
+        mv ~/godot-bin/Godot_v${{ inputs.version }}-stable_linux.x86_64 ~/godot-bin/godot
+        curl -fsSL -o /tmp/templates.tpz "$base/Godot_v${{ inputs.version }}-stable_export_templates.tpz"
+        dir=~/.local/share/godot/export_templates/${{ inputs.version }}.stable
+        mkdir -p "$dir"
+        files="version.txt"
+        for t in ${{ inputs.templates }}; do files="$files templates/$t"; done
+        unzip -q -j -o /tmp/templates.tpz $files -d "$dir"
+        rm /tmp/godot.zip /tmp/templates.tpz
+    - shell: bash
+      run: |
+        echo "$HOME/godot-bin" >> "$GITHUB_PATH"
+        ~/godot-bin/godot --version

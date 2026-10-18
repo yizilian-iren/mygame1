@@ -6,3 +6,8 @@
 *.log
 *.mono/
 
+
+# Exports are built by GitHub Actions (pages.yml, release.yml) or locally; not committed.
+# Keep .gdignore so the editor doesn't import the exported files.
+/Bulids/*
+!/Bulids/.gdignore
