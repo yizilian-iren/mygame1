@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://bt41t4yh30xva"]
 
 [ext_resource type="Script" uid="uid://b4vyilxuqaj6p" path="res://scripts/damage_label.gd" id="1_ovn2n"]
-[ext_resource type="FontFile" uid="uid://bpjdetljhxmxf" path="res://AssetBundle/Uranus_Pixel_11Px.ttf" id="2_deb5q"]
+[ext_resource type="FontFile" uid="uid://bk4brrjecqt34" path="res://AssetBundle/Uranus_Pixel_11Px.ttf" id="2_deb5q"]
 
 [node name="DamageLabel" type="Node2D"]
 z_index = 3

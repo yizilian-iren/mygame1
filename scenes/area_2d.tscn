@@ -1,7 +1,7 @@
 [gd_scene load_steps=9 format=3 uid="uid://bmhf2im2k8uia"]
 
-[ext_resource type="Texture2D" uid="uid://ccmsrxocv62f8" path="res://Assets/Characters/Enemies and NPC/Dog/Spritesheets/dog.png" id="1_nhxoo"]
-[ext_resource type="AudioStream" uid="uid://bqkggey7c1lv8" path="res://AssetBundle/Audio/EnemyDeath.mp3" id="2_5ieuq"]
+[ext_resource type="Texture2D" uid="uid://dlarns56j2xp5" path="res://Assets/Characters/Enemies and NPC/Dog/Spritesheets/dog.png" id="1_nhxoo"]
+[ext_resource type="AudioStream" uid="uid://gu8xg2vnsdl8" path="res://AssetBundle/Audio/EnemyDeath.mp3" id="2_5ieuq"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_pa2l1"]
 atlas = ExtResource("1_nhxoo")

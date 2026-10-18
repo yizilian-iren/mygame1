@@ -1,11 +1,11 @@
 [gd_scene load_steps=24 format=3 uid="uid://bixfgiso3njcu"]
 
-[ext_resource type="Texture2D" uid="uid://b4kx4xgm2g3er" path="res://AssetBundle/Sprites/Slimer.png" id="1_2d52u"]
+[ext_resource type="Texture2D" uid="uid://bwwdedlc6gcrj" path="res://AssetBundle/Sprites/Slimer.png" id="1_2d52u"]
 [ext_resource type="Script" uid="uid://cmnv3l0jvo05v" path="res://scripts/slime.gd" id="1_5jc4t"]
-[ext_resource type="Texture2D" uid="uid://68iq6ftt3tav" path="res://AssetBundle/Sprites/SlimerDeath.png" id="2_4l1t8"]
-[ext_resource type="AudioStream" uid="uid://vhj7vrvdwb2l" path="res://AssetBundle/Audio/fireball_hurt.wav" id="3_gstla"]
-[ext_resource type="AudioStream" uid="uid://bqkggey7c1lv8" path="res://AssetBundle/Audio/EnemyDeath.mp3" id="4_ppcr1"]
-[ext_resource type="AudioStream" uid="uid://dgd7rd14gyu7v" path="res://AssetBundle/Audio/350919__cabled_mess__hurt_c_05.wav" id="5_2npkn"]
+[ext_resource type="Texture2D" uid="uid://dlop5ytb4uktm" path="res://AssetBundle/Sprites/SlimerDeath.png" id="2_4l1t8"]
+[ext_resource type="AudioStream" uid="uid://dvd12u5mikdgr" path="res://AssetBundle/Audio/fireball_hurt.wav" id="3_gstla"]
+[ext_resource type="AudioStream" uid="uid://gu8xg2vnsdl8" path="res://AssetBundle/Audio/EnemyDeath.mp3" id="4_ppcr1"]
+[ext_resource type="AudioStream" uid="uid://dnomaqi15oj7p" path="res://AssetBundle/Audio/350919__cabled_mess__hurt_c_05.wav" id="5_2npkn"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_pjw23"]
 atlas = ExtResource("2_4l1t8")

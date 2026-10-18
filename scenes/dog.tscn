@@ -1,11 +1,11 @@
 [gd_scene load_steps=20 format=3 uid="uid://c747jc5p7ikn4"]
 
 [ext_resource type="Script" uid="uid://bxssyicah7eoa" path="res://scripts/dog.gd" id="1_gmowd"]
-[ext_resource type="Texture2D" uid="uid://ccmsrxocv62f8" path="res://Assets/Characters/Enemies and NPC/Dog/Spritesheets/dog.png" id="1_nhxoo"]
-[ext_resource type="Texture2D" uid="uid://68iq6ftt3tav" path="res://AssetBundle/Sprites/SlimerDeath.png" id="1_qjqk5"]
-[ext_resource type="AudioStream" uid="uid://bqkggey7c1lv8" path="res://AssetBundle/Audio/EnemyDeath.mp3" id="2_5ieuq"]
-[ext_resource type="AudioStream" uid="uid://dgd7rd14gyu7v" path="res://AssetBundle/Audio/350919__cabled_mess__hurt_c_05.wav" id="5_tpbal"]
-[ext_resource type="AudioStream" uid="uid://biqgax4do3ujw" path="res://AssetBundle/Audio/fireball_shot.wav" id="6_iaoh4"]
+[ext_resource type="Texture2D" uid="uid://dlarns56j2xp5" path="res://Assets/Characters/Enemies and NPC/Dog/Spritesheets/dog.png" id="1_nhxoo"]
+[ext_resource type="Texture2D" uid="uid://dlop5ytb4uktm" path="res://AssetBundle/Sprites/SlimerDeath.png" id="1_qjqk5"]
+[ext_resource type="AudioStream" uid="uid://gu8xg2vnsdl8" path="res://AssetBundle/Audio/EnemyDeath.mp3" id="2_5ieuq"]
+[ext_resource type="AudioStream" uid="uid://dnomaqi15oj7p" path="res://AssetBundle/Audio/350919__cabled_mess__hurt_c_05.wav" id="5_tpbal"]
+[ext_resource type="AudioStream" uid="uid://bpse8hutbejki" path="res://AssetBundle/Audio/fireball_shot.wav" id="6_iaoh4"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_jrxk1"]
 atlas = ExtResource("1_qjqk5")

@@ -1,8 +1,8 @@
 [gd_scene load_steps=18 format=3 uid="uid://c16xal0oxh2q"]
 
-[ext_resource type="Texture2D" uid="uid://bb5tahokani3h" path="res://AssetBundle/Sprites/spritesheet1.png" id="1_1gl40"]
+[ext_resource type="Texture2D" uid="uid://b5ebmx4uu5l2b" path="res://AssetBundle/Sprites/spritesheet1.png" id="1_1gl40"]
 [ext_resource type="Script" uid="uid://bu50p1yek0fpe" path="res://scripts/fireball.gd" id="1_cb14k"]
-[ext_resource type="Texture2D" uid="uid://vmuuwo3r463o" path="res://AssetBundle/Sprites/spritesheet.png" id="2_cb14k"]
+[ext_resource type="Texture2D" uid="uid://fhs4cy47mdwb" path="res://AssetBundle/Sprites/spritesheet.png" id="2_cb14k"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_7kba2"]
 atlas = ExtResource("1_1gl40")
