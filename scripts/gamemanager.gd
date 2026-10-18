@@ -29,18 +29,27 @@ var spawn_count = 1
 @export var player: Node
 @export var level_up_label : Label
 
+# name 是 i18n/strings.csv 里的 key
 var upgrades = [
-	{ "name": "攻撃力+", "effect": func(): player.attack += 1 },
-	{ "name": "移動速度+", "effect": func(): player.move_speed += 5},
-	{ "name": "HP+", "effect": func(): player.hp += 2 },
-	{ "name": "攻撃速度+", "effect": func(): player.shoot_timer.wait_time *= 0.7 },
-	{ "name": "会心率+", "effect": func(): player.crit_rate += 0.1 },
-	{ "name": "爆発範囲+", "effect": func(): player.fireball_explosion_radius += 8 },
-	{ "name": "ノックバック+", "effect": func(): player.knockback_strength += 3 },
+	{ "name": "UPG_ATTACK", "effect": func(): player.attack += 1 },
+	{ "name": "UPG_SPEED", "effect": func(): player.move_speed += 5},
+	{ "name": "UPG_HP", "effect": func(): player.hp += 2 },
+	{ "name": "UPG_FIRE_RATE", "effect": func(): player.shoot_timer.wait_time *= 0.7 },
+	{ "name": "UPG_CRIT", "effect": func(): player.crit_rate += 0.1 },
+	{ "name": "UPG_BLAST", "effect": func(): player.fireball_explosion_radius += 8 },
+	{ "name": "UPG_KNOCKBACK", "effect": func(): player.knockback_strength += 3 },
 ]
 
 var selected_effects = []
-var original_button_positions: Array = []
+# 升级的三个按钮停下的位置（相对屏幕中心）：上中、左下、右下。每次都停在这里，只上下浮动。
+const UPGRADE_SLOTS = [Vector2(0, -95), Vector2(-195, 60), Vector2(195, 60)]
+const FLOAT_HEIGHT = 8.0
+var upgrade_tweens: Array[Tween] = []
+@onready var upgrade_buttons = [
+	$CanvasLayer/LevelUpPanel/Button,
+	$CanvasLayer/LevelUpPanel/Button2,
+	$CanvasLayer/LevelUpPanel/Button3
+]
 
 
 # Called when the node enters the scene tree for the first time.
@@ -53,15 +62,10 @@ func _ready() -> void:
 	{ "scene": frog_scene, "weight": 1 },
 	]
 	hide_screen_mask()
-	await get_tree().process_frame
-	var buttons = [
-		$CanvasLayer/LevelUpPanel/Button,
-		$CanvasLayer/LevelUpPanel/Button2,
-		$CanvasLayer/LevelUpPanel/Button3
-	]
-
-	for button in buttons:
-		original_button_positions.append(button.position)
+	# BGM 循环：.import 里也设了 loop，这里再保险一次（重新导入时 loop 曾被重置成 false）
+	$AudioStreamPlayer.stream.loop = true
+	for i in range(upgrade_buttons.size()):
+		upgrade_buttons[i].pressed.connect(_on_upgrade_chosen.bind(i))
 
 
 
@@ -127,44 +131,32 @@ func show_level_up():
 	chosen.shuffle()
 	chosen = chosen.slice(0, 3)
 
-	var buttons = [
-		$CanvasLayer/LevelUpPanel/Button,
-		$CanvasLayer/LevelUpPanel/Button2,
-		$CanvasLayer/LevelUpPanel/Button3
-	]
-
-	
 	selected_effects.clear()
-	
+	_stop_upgrade_tweens()
+	var center = get_viewport().get_visible_rect().size / 2
+
 	for i in range(3):
 		var upgrade = chosen[i]
-		var button = buttons[i]
-		button.text = upgrade["name"]
-		
-		button.position = original_button_positions[i]
-		if button.pressed.is_connected(_on_upgrade_chosen):
-			button.pressed.disconnect(_on_upgrade_chosen)
-
+		var button = upgrade_buttons[i]
+		button.text = upgrade["name"]  # key，按钮自己翻译，换语言时跟着变
 		selected_effects.append(upgrade["effect"])
-		button.pressed.connect(_on_upgrade_chosen.bind(i))
-		
-		button.scale = Vector2(0.0, 0.0)  # 🔸初始缩小
-		button.pivot_offset = (button.size / 2) - Vector2(-5, -5)
-		
-		
-		var tween = create_tween()
-		tween.tween_property(button, "scale", Vector2(0.70, 0.70), 2)
-		tween.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-		
-		# 添加上下浮动的 tween（循环）
-		var delay = randf_range(0.0, 0.5)
-		var offset = randf_range(4.0, 8.0)  # 上下移动范围
-		var speed = randf_range(0.1, 0.3)   # 移动速度
 
-		var float_tween = create_tween()
-		float_tween.set_loops()  # 无限循环
-		float_tween.tween_property(button, "position:y", button.position.y - 5, 0.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-		float_tween.tween_property(button, "position:y", button.position.y, 0.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+		# 固定大小、固定位置，从中心弹出来
+		var rest = center + UPGRADE_SLOTS[i] - button.size / 2
+		button.position = rest
+		button.pivot_offset = button.size / 2
+		button.scale = Vector2.ZERO
+
+		var pop = create_tween()
+		pop.tween_property(button, "scale", Vector2.ONE, 0.6).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+		upgrade_tweens.append(pop)
+
+		# 上下浮动：每个按钮起步时间不同，看起来不呆板；但只在停下的位置上方 FLOAT_HEIGHT 内动
+		var float_tween = create_tween().set_loops()
+		float_tween.tween_interval(randf_range(0.0, 0.5))
+		float_tween.tween_property(button, "position:y", rest.y - FLOAT_HEIGHT, 0.6).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+		float_tween.tween_property(button, "position:y", rest.y, 0.6).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+		upgrade_tweens.append(float_tween)
 
 
 	level_up_label.visible = true
@@ -175,18 +167,16 @@ func _on_upgrade_chosen(index: int):
 	$button.play()
 	selected_effects[index].call()  # 执行玩家选的那个升级效果
 
+	_stop_upgrade_tweens()
 	$CanvasLayer/LevelUpPanel.visible = false
 	hide_screen_mask()
 	get_tree().paused = false
-	var buttons = [
-		$CanvasLayer/LevelUpPanel/Button,
-		$CanvasLayer/LevelUpPanel/Button2,
-		$CanvasLayer/LevelUpPanel/Button3
-	]	
-		
-	$CanvasLayer/LevelUpPanel.visible = false
-	hide_screen_mask()
-	get_tree().paused = false
+
+
+func _stop_upgrade_tweens():
+	for t in upgrade_tweens:
+		t.kill()
+	upgrade_tweens.clear()
 
 func shrink_black_mask_to_circle():
 	var mask = $CanvasLayer/ScreenMask
@@ -204,12 +194,14 @@ func hide_screen_mask():
 	$CanvasLayer/ScreenMask.hide()
 	
 func update_status_panel():
-	$CanvasLayer/Panel/level.text = "Level  :  " + str(player.level)
-	$"CanvasLayer/Panel/level to up".text = "レベルアップまで : " + str(player.remaining)
-	$CanvasLayer/Panel/AttackLabel.text = "攻撃力:  " + str(player.attack)
-	$CanvasLayer/Panel/Label2.text = "HP:  " + str(player.hp)
-	$CanvasLayer/Panel/Label3.text = "会心率:  " + str(round(player.crit_rate * 100)) + "%"
-	$CanvasLayer/Panel/Label4.text = "攻撃間隔:  " + str(player.shoot_timer.wait_time) + "s"
-	$CanvasLayer/Panel/Label5.text = "移動速度:  " + str(player.move_speed)
-	$CanvasLayer/Panel/Label6.text = "爆発範囲:  " + str(player.fireball_explosion_radius)
-	$CanvasLayer/Panel/Label7.text = "ノックバック:  " + str(player.knockback_strength)
+	var status = $CanvasLayer/Status
+	var stats = $CanvasLayer/Status/Stats
+	status.get_node("LevelLabel").text = tr("LEVEL") % player.level
+	status.get_node("NextLabel").text = tr("NEXT_LEVEL") % player.remaining
+	stats.get_node("HPValue").text = str(player.hp)
+	stats.get_node("AttackValue").text = str(player.attack)
+	stats.get_node("CritValue").text = "%d%%" % round(player.crit_rate * 100)
+	stats.get_node("IntervalValue").text = tr("SECONDS") % player.shoot_timer.wait_time
+	stats.get_node("SpeedValue").text = str(int(player.move_speed))
+	stats.get_node("BlastValue").text = str(int(player.fireball_explosion_radius))
+	stats.get_node("KnockbackValue").text = str(int(player.knockback_strength))

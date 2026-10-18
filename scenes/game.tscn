@@ -1,19 +1,22 @@
 [gd_scene load_steps=21 format=3 uid="uid://ewara0nmoqix"]
 
 [ext_resource type="Script" uid="uid://diloo4lcoxtge" path="res://scripts/gamemanager.gd" id="1_lbhrr"]
-[ext_resource type="Texture2D" uid="uid://u8ovop4ced2v" path="res://AssetBundle/Sprites/ForestBackground.png" id="1_uwrxv"]
+[ext_resource type="Texture2D" uid="uid://bmnx1h7aymrp0" path="res://AssetBundle/Sprites/ForestBackground.png" id="1_uwrxv"]
 [ext_resource type="PackedScene" uid="uid://bixfgiso3njcu" path="res://scenes/slime.tscn" id="2_u5sy4"]
 [ext_resource type="PackedScene" uid="uid://bjyyj7c3vi0jc" path="res://scenes/player.tscn" id="2_yqjtg"]
 [ext_resource type="PackedScene" uid="uid://di7j4m5jy6f2j" path="res://scenes/dino.tscn" id="3_p57ef"]
 [ext_resource type="PackedScene" uid="uid://c747jc5p7ikn4" path="res://scenes/dog.tscn" id="4_u5sy4"]
-[ext_resource type="FontFile" uid="uid://bpjdetljhxmxf" path="res://AssetBundle/Uranus_Pixel_11Px.ttf" id="5_iywne"]
+[ext_resource type="FontFile" uid="uid://bk4brrjecqt34" path="res://AssetBundle/Uranus_Pixel_11Px.ttf" id="5_iywne"]
 [ext_resource type="PackedScene" uid="uid://po7bvd50amtu" path="res://scenes/skeleton.tscn" id="5_vtaks"]
 [ext_resource type="PackedScene" uid="uid://ehun7e2cbt1g" path="res://scenes/frog.tscn" id="6_kvpfn"]
-[ext_resource type="AudioStream" uid="uid://3n2lkhsaq75o" path="res://AssetBundle/Audio/BGM.ogg" id="8_gee14"]
+[ext_resource type="AudioStream" uid="uid://dsn6h3h7i1ftb" path="res://AssetBundle/Audio/BGM.ogg" id="8_gee14"]
 [ext_resource type="Shader" uid="uid://dc3v4c134ux1r" path="res://scripts/Shader.gdshader" id="10_kvpfn"]
-[ext_resource type="AudioStream" uid="uid://cfgcg1e5aqr6j" path="res://AssetBundle/Audio/686461__lomowo__time-stops.wav" id="12_dinhu"]
-[ext_resource type="AudioStream" uid="uid://2ky44f176don" path="res://AssetBundle/Audio/80921__justinbw__buttonchime02up.wav" id="13_kvuet"]
+[ext_resource type="AudioStream" uid="uid://ce8wso142w70o" path="res://AssetBundle/Audio/686461__lomowo__time-stops.wav" id="12_dinhu"]
+[ext_resource type="AudioStream" uid="uid://biuff3lgppqf" path="res://AssetBundle/Audio/80921__justinbw__buttonchime02up.wav" id="13_kvuet"]
 [ext_resource type="Script" path="res://scripts/touch_controls.gd" id="14_touch"]
+[ext_resource type="FontVariation" path="res://AssetBundle/Fonts/ui_font.tres" id="15_uifont"]
+[ext_resource type="Script" path="res://scripts/lang_switch.gd" id="16_lang"]
+[ext_resource type="FontFile" path="res://AssetBundle/Fonts/DotGothic16-Regular.ttf" id="17_dotgothic"]
 
 [sub_resource type="Animation" id="Animation_p57ef"]
 length = 0.001
@@ -85,9 +88,6 @@ shader = ExtResource("10_kvpfn")
 shader_parameter/radius = 1.5
 shader_parameter/center = Vector2(0.5, 0.5)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kvuet"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
-
 [node name="Node2D" type="Node2D" node_paths=PackedStringArray("slime_timer", "dino_timer", "dog_timer", "skeleton_timer", "frog_timer", "score_label", "game_over_label", "player", "level_up_label")]
 process_mode = 3
 y_sort_enabled = true
@@ -102,7 +102,7 @@ skeleton_scene = ExtResource("5_vtaks")
 skeleton_timer = NodePath("monster timer/skeleton")
 frog_scene = ExtResource("6_kvpfn")
 frog_timer = NodePath("monster timer/frog")
-score_label = NodePath("CanvasLayer/Panel/level to up")
+score_label = NodePath("CanvasLayer/Status/NextLabel")
 game_over_label = NodePath("CanvasLayer/game over label")
 player = NodePath("player")
 level_up_label = NodePath("level up")
@@ -151,9 +151,9 @@ pivot_offset = Vector2(50, 10)
 size_flags_horizontal = 4
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 12
-theme_override_fonts/font = ExtResource("5_iywne")
+theme_override_fonts/font = ExtResource("15_uifont")
 theme_override_font_sizes/font_size = 12
-text = "Level Up!"
+text = "LEVEL_UP"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -215,14 +215,17 @@ process_mode = 3
 
 [node name="game over label" type="Label" parent="CanvasLayer"]
 visible = false
-offset_left = 294.0
+anchors_preset = 10
+anchor_right = 1.0
 offset_top = 255.0
-offset_right = 928.0
 offset_bottom = 375.0
+grow_horizontal = 2
 theme_override_constants/outline_size = 60
-theme_override_fonts/font = ExtResource("5_iywne")
+theme_override_fonts/font = ExtResource("15_uifont")
 theme_override_font_sizes/font_size = 120
-text = "GAME OVER!"
+text = "GAME_OVER"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="ScreenMask" type="ColorRect" parent="CanvasLayer"]
 process_mode = 3
@@ -237,202 +240,222 @@ color = Color(0, 0, 0, 0.407843)
 
 [node name="LevelUpPanel" type="Control" parent="CanvasLayer"]
 process_mode = 2
+visible = false
 z_index = 120
 layout_mode = 3
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -8.00006
-offset_top = -10.0
-offset_right = 11.9999
-offset_bottom = 10.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-scale = Vector2(3.43533, 3.41271)
-pivot_offset = Vector2(10, 10)
-size_flags_horizontal = 4
-metadata/_edit_use_anchors_ = true
+mouse_filter = 2
 
 [node name="Button" type="Button" parent="CanvasLayer/LevelUpPanel"]
 z_index = 12
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -68.304
-offset_top = 24.3581
-offset_right = -68.304
-offset_bottom = 24.3581
-grow_horizontal = 2
-grow_vertical = 2
-scale = Vector2(1.00133e-05, 1e-05)
-size_flags_horizontal = 4
+layout_mode = 0
+offset_right = 360.0
+offset_bottom = 72.0
 focus_mode = 0
-theme_override_constants/outline_size = 12
-theme_override_fonts/font = ExtResource("5_iywne")
+theme_override_constants/outline_size = 16
+theme_override_fonts/font = ExtResource("15_uifont")
+theme_override_font_sizes/font_size = 40
 flat = true
-icon_alignment = 1
 
 [node name="Button2" type="Button" parent="CanvasLayer/LevelUpPanel"]
 z_index = 12
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -25.2222
-offset_top = -28.3859
-offset_right = -25.2222
-offset_bottom = -28.3859
-grow_horizontal = 2
-grow_vertical = 2
-scale = Vector2(1e-05, 1e-05)
-size_flags_horizontal = 4
+layout_mode = 0
+offset_right = 360.0
+offset_bottom = 72.0
 focus_mode = 0
-theme_override_constants/outline_size = 12
-theme_override_fonts/font = ExtResource("5_iywne")
+theme_override_constants/outline_size = 16
+theme_override_fonts/font = ExtResource("15_uifont")
+theme_override_font_sizes/font_size = 40
 flat = true
-icon_alignment = 1
 
 [node name="Button3" type="Button" parent="CanvasLayer/LevelUpPanel"]
 z_index = 12
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 19.6061
-offset_top = 18.7907
-offset_right = 19.6061
-offset_bottom = 18.7907
-grow_horizontal = 2
-grow_vertical = 2
-scale = Vector2(1e-05, 1e-05)
-size_flags_horizontal = 4
+layout_mode = 0
+offset_right = 360.0
+offset_bottom = 72.0
 focus_mode = 0
-theme_override_constants/outline_size = 12
-theme_override_fonts/font = ExtResource("5_iywne")
+theme_override_constants/outline_size = 16
+theme_override_fonts/font = ExtResource("15_uifont")
+theme_override_font_sizes/font_size = 40
 flat = true
-icon_alignment = 1
 
-[node name="Panel" type="Panel" parent="CanvasLayer"]
-offset_left = 5.0
-offset_top = 145.0
-offset_right = 45.0
-offset_bottom = 185.0
-scale = Vector2(5.22028, 6.86416)
-theme_override_styles/panel = SubResource("StyleBoxFlat_kvuet")
+[node name="Status" type="VBoxContainer" parent="CanvasLayer"]
+offset_left = 14.0
+offset_top = 10.0
+offset_right = 254.0
+offset_bottom = 300.0
+mouse_filter = 2
+theme_override_constants/separation = 2
 
-[node name="AttackLabel" type="Label" parent="CanvasLayer/Panel"]
-layout_mode = 0
-offset_left = 0.957803
-offset_top = 4.51621
-offset_right = 63.9578
-offset_bottom = 31.5162
-scale = Vector2(0.187989, 0.163682)
+[node name="LevelLabel" type="Label" parent="CanvasLayer/Status"]
+layout_mode = 2
+theme_override_constants/outline_size = 10
+theme_override_fonts/font = ExtResource("15_uifont")
+theme_override_font_sizes/font_size = 32
+text = "Level 1"
+
+[node name="NextLabel" type="Label" parent="CanvasLayer/Status"]
+layout_mode = 2
 theme_override_constants/outline_size = 8
-theme_override_fonts/font = ExtResource("5_iywne")
-text = "攻击力: 1"
+theme_override_fonts/font = ExtResource("15_uifont")
+theme_override_font_sizes/font_size = 20
+text = "Next level: 1 more"
 
-[node name="Label2" type="Label" parent="CanvasLayer/Panel"]
-layout_mode = 0
-offset_left = 0.957803
-offset_top = 0.874106
-offset_right = 84.9578
-offset_bottom = 23.8741
-scale = Vector2(0.185182, 0.165259)
+[node name="Gap" type="Control" parent="CanvasLayer/Status"]
+custom_minimum_size = Vector2(0, 14)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Stats" type="GridContainer" parent="CanvasLayer/Status"]
+layout_mode = 2
+theme_override_constants/h_separation = 14
+theme_override_constants/v_separation = 4
+columns = 2
+
+[node name="HPName" type="Label" parent="CanvasLayer/Status/Stats"]
+layout_mode = 2
 theme_override_constants/outline_size = 8
-theme_override_fonts/font = ExtResource("5_iywne")
-text = "生命值: 200"
+theme_override_fonts/font = ExtResource("15_uifont")
+theme_override_font_sizes/font_size = 20
+text = "STAT_HP"
 
-[node name="Label3" type="Label" parent="CanvasLayer/Panel"]
-layout_mode = 0
-offset_left = 0.766242
-offset_top = 9.17811
-offset_right = 40.7662
-offset_bottom = 32.1781
-scale = Vector2(0.203057, 0.138961)
+[node name="HPValue" type="Label" parent="CanvasLayer/Status/Stats"]
+layout_mode = 2
 theme_override_constants/outline_size = 8
-theme_override_fonts/font = ExtResource("5_iywne")
-text = "12"
+theme_override_fonts/font = ExtResource("15_uifont")
+theme_override_font_sizes/font_size = 20
+text = "0"
 
-[node name="Label4" type="Label" parent="CanvasLayer/Panel"]
-layout_mode = 0
-offset_left = 0.766243
-offset_top = 13.2573
-offset_right = 40.7658
-offset_bottom = 36.2573
-scale = Vector2(0.197799, 0.146578)
+[node name="AttackName" type="Label" parent="CanvasLayer/Status/Stats"]
+layout_mode = 2
 theme_override_constants/outline_size = 8
-theme_override_fonts/font = ExtResource("5_iywne")
-text = "12"
+theme_override_fonts/font = ExtResource("15_uifont")
+theme_override_font_sizes/font_size = 20
+text = "STAT_ATTACK"
 
-[node name="Label5" type="Label" parent="CanvasLayer/Panel"]
-layout_mode = 0
-offset_left = 0.766243
-offset_top = 17.1907
-offset_right = 40.7665
-offset_bottom = 40.1907
-scale = Vector2(0.201953, 0.149496)
+[node name="AttackValue" type="Label" parent="CanvasLayer/Status/Stats"]
+layout_mode = 2
 theme_override_constants/outline_size = 8
-theme_override_fonts/font = ExtResource("5_iywne")
-text = "12"
+theme_override_fonts/font = ExtResource("15_uifont")
+theme_override_font_sizes/font_size = 20
+text = "0"
 
-[node name="Label6" type="Label" parent="CanvasLayer/Panel"]
-layout_mode = 0
-offset_left = 0.766242
-offset_top = 20.9785
-offset_right = 40.7662
-offset_bottom = 43.9785
-scale = Vector2(0.199828, 0.148764)
+[node name="CritName" type="Label" parent="CanvasLayer/Status/Stats"]
+layout_mode = 2
 theme_override_constants/outline_size = 8
-theme_override_fonts/font = ExtResource("5_iywne")
-text = "12"
+theme_override_fonts/font = ExtResource("15_uifont")
+theme_override_font_sizes/font_size = 20
+text = "STAT_CRIT"
 
-[node name="Label7" type="Label" parent="CanvasLayer/Panel"]
-layout_mode = 0
-offset_left = 0.957803
-offset_top = 26.0775
-offset_right = 41.9578
-offset_bottom = 48.0775
-scale = Vector2(0.215508, 0.140046)
+[node name="CritValue" type="Label" parent="CanvasLayer/Status/Stats"]
+layout_mode = 2
 theme_override_constants/outline_size = 8
-theme_override_fonts/font = ExtResource("5_iywne")
-text = "12"
+theme_override_fonts/font = ExtResource("15_uifont")
+theme_override_font_sizes/font_size = 20
+text = "0"
 
-[node name="level" type="Label" parent="CanvasLayer/Panel"]
-layout_mode = 0
-offset_left = 2.29873
-offset_top = -19.376
-offset_right = 51.2987
-offset_bottom = 3.62399
-scale = Vector2(0.353822, 0.292299)
+[node name="IntervalName" type="Label" parent="CanvasLayer/Status/Stats"]
+layout_mode = 2
 theme_override_constants/outline_size = 8
-theme_override_fonts/font = ExtResource("5_iywne")
-text = "level:  "
+theme_override_fonts/font = ExtResource("15_uifont")
+theme_override_font_sizes/font_size = 20
+text = "STAT_INTERVAL"
 
-[node name="level to up" type="Label" parent="CanvasLayer/Panel"]
-layout_mode = 0
-offset_left = 1.34092
-offset_top = -10.9263
-offset_right = 155.341
-offset_bottom = 38.0737
-scale = Vector2(0.147467, 0.114993)
-theme_override_constants/outline_size = 12
-theme_override_fonts/font = ExtResource("5_iywne")
-theme_override_font_sizes/font_size = 24
-text = "升级还需:  0"
+[node name="IntervalValue" type="Label" parent="CanvasLayer/Status/Stats"]
+layout_mode = 2
+theme_override_constants/outline_size = 8
+theme_override_fonts/font = ExtResource("15_uifont")
+theme_override_font_sizes/font_size = 20
+text = "0"
+
+[node name="SpeedName" type="Label" parent="CanvasLayer/Status/Stats"]
+layout_mode = 2
+theme_override_constants/outline_size = 8
+theme_override_fonts/font = ExtResource("15_uifont")
+theme_override_font_sizes/font_size = 20
+text = "STAT_SPEED"
+
+[node name="SpeedValue" type="Label" parent="CanvasLayer/Status/Stats"]
+layout_mode = 2
+theme_override_constants/outline_size = 8
+theme_override_fonts/font = ExtResource("15_uifont")
+theme_override_font_sizes/font_size = 20
+text = "0"
+
+[node name="BlastName" type="Label" parent="CanvasLayer/Status/Stats"]
+layout_mode = 2
+theme_override_constants/outline_size = 8
+theme_override_fonts/font = ExtResource("15_uifont")
+theme_override_font_sizes/font_size = 20
+text = "STAT_BLAST"
+
+[node name="BlastValue" type="Label" parent="CanvasLayer/Status/Stats"]
+layout_mode = 2
+theme_override_constants/outline_size = 8
+theme_override_fonts/font = ExtResource("15_uifont")
+theme_override_font_sizes/font_size = 20
+text = "0"
+
+[node name="KnockbackName" type="Label" parent="CanvasLayer/Status/Stats"]
+layout_mode = 2
+theme_override_constants/outline_size = 8
+theme_override_fonts/font = ExtResource("15_uifont")
+theme_override_font_sizes/font_size = 20
+text = "STAT_KNOCKBACK"
+
+[node name="KnockbackValue" type="Label" parent="CanvasLayer/Status/Stats"]
+layout_mode = 2
+theme_override_constants/outline_size = 8
+theme_override_fonts/font = ExtResource("15_uifont")
+theme_override_font_sizes/font_size = 20
+text = "0"
 
 [node name="Label" type="Label" parent="CanvasLayer"]
-offset_left = 242.0
-offset_top = 7.0
-offset_right = 380.0
-offset_bottom = 58.0
+offset_left = 300.0
+offset_top = 10.0
+offset_right = 640.0
+offset_bottom = 70.0
+theme_override_constants/outline_size = 8
+theme_override_fonts/font = ExtResource("15_uifont")
+theme_override_font_sizes/font_size = 24
+text = "HINT_KEYS"
+
+[node name="LangSwitch" type="HBoxContainer" parent="CanvasLayer"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -196.0
+offset_top = 12.0
+offset_right = -14.0
+offset_bottom = 56.0
+grow_horizontal = 0
+alignment = 2
+script = ExtResource("16_lang")
+
+[node name="EN" type="Button" parent="CanvasLayer/LangSwitch"]
+custom_minimum_size = Vector2(64, 44)
+layout_mode = 2
+focus_mode = 0
 theme_override_constants/outline_size = 8
 theme_override_fonts/font = ExtResource("5_iywne")
+theme_override_font_sizes/font_size = 30
+text = "EN"
+flat = true
+
+[node name="JA" type="Button" parent="CanvasLayer/LangSwitch"]
+custom_minimum_size = Vector2(100, 44)
+layout_mode = 2
+focus_mode = 0
+auto_translate_mode = 2
+theme_override_constants/outline_size = 8
+theme_override_fonts/font = ExtResource("17_dotgothic")
 theme_override_font_sizes/font_size = 24
-text = "move : W A S D
-switch : Q"
+text = "日本語"
+flat = true
 
 [node name="TouchControls" type="CanvasLayer" parent="."]
 script = ExtResource("14_touch")

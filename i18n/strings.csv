@@ -1,0 +1,22 @@
+keys,en,ja
+LEVEL,Level %d,レベル %d
+NEXT_LEVEL,Next level: %d more,次のレベルまで あと%d体
+STAT_HP,HP,HP
+STAT_ATTACK,Attack,攻撃力
+STAT_CRIT,Crit rate,会心率
+STAT_INTERVAL,Fire interval,攻撃間隔
+SECONDS,%.2fs,%.2f秒
+STAT_SPEED,Move speed,移動速度
+STAT_BLAST,Blast radius,爆発範囲
+STAT_KNOCKBACK,Knockback,ノックバック
+UPG_ATTACK,Attack Up,攻撃力アップ
+UPG_SPEED,Move Speed Up,移動速度アップ
+UPG_HP,HP +2,HP +2
+UPG_FIRE_RATE,Attack Speed Up,攻撃速度アップ
+UPG_CRIT,Crit Rate Up,会心率アップ
+UPG_BLAST,Blast Radius Up,爆発範囲アップ
+UPG_KNOCKBACK,Knockback Up,ノックバック強化
+HINT_KEYS,Move: WASD\nSwitch weapon: Q,移動：WASD\n武器の切り替え：Q
+HINT_TOUCH,Move: drag on the left\nSwitch weapon: SWITCH,移動：画面の左側をドラッグ\n武器の切り替え：SWITCH
+LEVEL_UP,LEVEL UP!,レベルアップ！
+GAME_OVER,GAME OVER!,ゲームオーバー
