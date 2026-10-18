@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://ewara0nmoqix"]
+[gd_scene load_steps=21 format=3 uid="uid://ewara0nmoqix"]
 
 [ext_resource type="Script" uid="uid://diloo4lcoxtge" path="res://scripts/gamemanager.gd" id="1_lbhrr"]
 [ext_resource type="Texture2D" uid="uid://u8ovop4ced2v" path="res://AssetBundle/Sprites/ForestBackground.png" id="1_uwrxv"]
@@ -13,6 +13,7 @@
 [ext_resource type="Shader" uid="uid://dc3v4c134ux1r" path="res://scripts/Shader.gdshader" id="10_kvpfn"]
 [ext_resource type="AudioStream" uid="uid://cfgcg1e5aqr6j" path="res://AssetBundle/Audio/686461__lomowo__time-stops.wav" id="12_dinhu"]
 [ext_resource type="AudioStream" uid="uid://2ky44f176don" path="res://AssetBundle/Audio/80921__justinbw__buttonchime02up.wav" id="13_kvuet"]
+[ext_resource type="Script" path="res://scripts/touch_controls.gd" id="14_touch"]
 
 [sub_resource type="Animation" id="Animation_p57ef"]
 length = 0.001
@@ -432,6 +433,9 @@ theme_override_fonts/font = ExtResource("5_iywne")
 theme_override_font_sizes/font_size = 24
 text = "move : W A S D
 switch : Q"
+
+[node name="TouchControls" type="CanvasLayer" parent="."]
+script = ExtResource("14_touch")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 process_mode = 3
