@@ -140,7 +140,7 @@ func _on_fire() -> void:
 		return  # 保险：未知武器不发射
 
 
-func _reload_scene(anim_name: String) -> void:
+func _reload_scene(_anim_name: String = "") -> void:  # RestartTimer.timeout 不带参数
 	get_tree().reload_current_scene()
 	
 func take_damage(amount: int):
