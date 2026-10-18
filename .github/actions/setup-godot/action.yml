@@ -24,17 +24,18 @@ runs:
       run: |
         set -euo pipefail
         base=https://github.com/godotengine/godot/releases/download/${{ inputs.version }}-stable
+        tmp=$(mktemp -d "${RUNNER_TEMP:-/tmp}/godot.XXXXXX")
+        trap 'rm -rf "$tmp"' EXIT
         mkdir -p ~/godot-bin
-        curl -fsSL -o /tmp/godot.zip "$base/Godot_v${{ inputs.version }}-stable_linux.x86_64.zip"
-        unzip -q -o /tmp/godot.zip -d ~/godot-bin
+        curl -fsSL -o "$tmp/godot.zip" "$base/Godot_v${{ inputs.version }}-stable_linux.x86_64.zip"
+        unzip -q -o "$tmp/godot.zip" -d ~/godot-bin
         mv ~/godot-bin/Godot_v${{ inputs.version }}-stable_linux.x86_64 ~/godot-bin/godot
-        curl -fsSL -o /tmp/templates.tpz "$base/Godot_v${{ inputs.version }}-stable_export_templates.tpz"
+        curl -fsSL -o "$tmp/templates.tpz" "$base/Godot_v${{ inputs.version }}-stable_export_templates.tpz"
         dir=~/.local/share/godot/export_templates/${{ inputs.version }}.stable
         mkdir -p "$dir"
-        files="version.txt"
+        files="templates/version.txt"
         for t in ${{ inputs.templates }}; do files="$files templates/$t"; done
-        unzip -q -j -o /tmp/templates.tpz $files -d "$dir"
-        rm /tmp/godot.zip /tmp/templates.tpz
+        unzip -q -j -o "$tmp/templates.tpz" $files -d "$dir"
     - shell: bash
       run: |
         echo "$HOME/godot-bin" >> "$GITHUB_PATH"
