@@ -428,7 +428,7 @@ text = "HINT_KEYS"
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -196.0
+offset_left = -274.0
 offset_top = 12.0
 offset_right = -14.0
 offset_bottom = 56.0
@@ -455,6 +455,17 @@ theme_override_constants/outline_size = 8
 theme_override_fonts/font = ExtResource("17_dotgothic")
 theme_override_font_sizes/font_size = 24
 text = "日本語"
+flat = true
+
+[node name="ZH" type="Button" parent="CanvasLayer/LangSwitch"]
+custom_minimum_size = Vector2(76, 44)
+layout_mode = 2
+focus_mode = 0
+auto_translate_mode = 2
+theme_override_constants/outline_size = 8
+theme_override_fonts/font = ExtResource("5_iywne")
+theme_override_font_sizes/font_size = 26
+text = "中文"
 flat = true
 
 [node name="TouchControls" type="CanvasLayer" parent="."]

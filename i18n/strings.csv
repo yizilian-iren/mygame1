@@ -1,22 +1,22 @@
-keys,en,ja
-LEVEL,Level %d,レベル %d
-NEXT_LEVEL,Next level: %d more,次のレベルまで あと%d体
-STAT_HP,HP,HP
-STAT_ATTACK,Attack,攻撃力
-STAT_CRIT,Crit rate,会心率
-STAT_INTERVAL,Fire interval,攻撃間隔
-SECONDS,%.2fs,%.2f秒
-STAT_SPEED,Move speed,移動速度
-STAT_BLAST,Blast radius,爆発範囲
-STAT_KNOCKBACK,Knockback,ノックバック
-UPG_ATTACK,Attack Up,攻撃力アップ
-UPG_SPEED,Move Speed Up,移動速度アップ
-UPG_HP,HP +2,HP +2
-UPG_FIRE_RATE,Attack Speed Up,攻撃速度アップ
-UPG_CRIT,Crit Rate Up,会心率アップ
-UPG_BLAST,Blast Radius Up,爆発範囲アップ
-UPG_KNOCKBACK,Knockback Up,ノックバック強化
-HINT_KEYS,Move: WASD\nSwitch weapon: Q,移動：WASD\n武器の切り替え：Q
-HINT_TOUCH,Move: drag on the left\nSwitch weapon: SWITCH,移動：画面の左側をドラッグ\n武器の切り替え：SWITCH
-LEVEL_UP,LEVEL UP!,レベルアップ！
-GAME_OVER,GAME OVER!,ゲームオーバー
+keys,en,ja,zh
+LEVEL,Level %d,レベル %d,等级 %d
+NEXT_LEVEL,Next level: %d more,次のレベルまで あと%d体,升级还需击败 %d 只
+STAT_HP,HP,HP,生命值
+STAT_ATTACK,Attack,攻撃力,攻击力
+STAT_CRIT,Crit rate,会心率,暴击率
+STAT_INTERVAL,Fire interval,攻撃間隔,攻击间隔
+SECONDS,%.2fs,%.2f秒,%.2f秒
+STAT_SPEED,Move speed,移動速度,移动速度
+STAT_BLAST,Blast radius,爆発範囲,爆炸范围
+STAT_KNOCKBACK,Knockback,ノックバック,击退
+UPG_ATTACK,Attack Up,攻撃力アップ,攻击力提升
+UPG_SPEED,Move Speed Up,移動速度アップ,移动速度提升
+UPG_HP,HP +2,HP +2,生命值 +2
+UPG_FIRE_RATE,Attack Speed Up,攻撃速度アップ,攻击速度提升
+UPG_CRIT,Crit Rate Up,会心率アップ,暴击率提升
+UPG_BLAST,Blast Radius Up,爆発範囲アップ,爆炸范围扩大
+UPG_KNOCKBACK,Knockback Up,ノックバック強化,击退增强
+HINT_KEYS,Move: WASD\nSwitch weapon: Q,移動：WASD\n武器の切り替え：Q,移动：WASD\n切换武器：Q
+HINT_TOUCH,Move: drag on the left\nSwitch weapon: SWITCH,移動：画面の左側をドラッグ\n武器の切り替え：SWITCH,移动：在屏幕左侧拖动\n切换武器：SWITCH
+LEVEL_UP,LEVEL UP!,レベルアップ！,升级！
+GAME_OVER,GAME OVER!,ゲームオーバー,游戏结束

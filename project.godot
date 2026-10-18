@@ -58,7 +58,7 @@ open_stat_panel={
 
 [internationalization]
 
-locale/translations=PackedStringArray("res://i18n/strings.en.translation", "res://i18n/strings.ja.translation")
+locale/translations=PackedStringArray("res://i18n/strings.en.translation", "res://i18n/strings.ja.translation", "res://i18n/strings.zh.translation")
 
 [rendering]
 
