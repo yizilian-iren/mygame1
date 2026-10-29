@@ -43,14 +43,17 @@ var upgrades = [
 var selected_effects = []
 # 升级的三个按钮停下的位置（相对屏幕中心）：上中、左下、右下。每次都停在这里，只上下浮动。
 const UPGRADE_SLOTS = [Vector2(0, -95), Vector2(-195, 60), Vector2(195, 60)]
-const FLOAT_HEIGHT = 8.0
+const FLOAT_HEIGHT = 14.0
+const FLOAT_HALF = 0.9  # 上下浮动半个来回的时间
 # 升级时黑幕收拢和三个选项飘出来用同一组时长和曲线，同时开始、同时到位（I-11）。
 # 黑幕原来写的是 EXPO / EASE_OUT，但 set_trans 写在 tween_property 之后没生效，屏幕上一直是匀速；先保持看到的样子。
 const REVEAL_TIME = 1.5
 const REVEAL_TRANS = Tween.TRANS_LINEAR
 const REVEAL_EASE = Tween.EASE_OUT
-# 飘出来：从停下位置下方 RISE 往上飘，同时左右摆（旋转 SWAY_DEG、水平 SWAY_X），越摆越小，到位时归零
-const RISE = 30.0
+const REVEAL_DELAY = 0.75  # 选项等黑幕走到一半再出来，自己的入场同样是 REVEAL_TIME
+# 飘出来：从停下位置下方 RISE 往上浮，冲过停的位置约 10 px（RISE_BACK 是回弹曲线的系数）再落回去；同时左右摆（旋转 SWAY_DEG、水平 SWAY_X），越摆越小，到位时归零
+const RISE = 60.0
+const RISE_BACK = 2.3
 const SWAY_DEG = 4.0
 const SWAY_X = 6.0
 const SWAY_TURNS = 2.0  # 整个入场摆几个来回
@@ -162,6 +165,8 @@ func show_level_up():
 		# 三个按钮摆动的相位错开；到位后接上下浮动
 		var phase = i * TAU / 3 + randf_range(-0.3, 0.3)
 		var pop = create_tween()
+		_float_in(0.0, button, rest, phase)
+		pop.tween_interval(REVEAL_DELAY)
 		pop.tween_method(_float_in.bind(button, rest, phase), 0.0, 1.0, REVEAL_TIME)
 		pop.tween_callback(_start_float.bind(button, rest))
 		upgrade_tweens.append(pop)
@@ -187,14 +192,16 @@ func _float_in(t: float, button: Button, rest: Vector2, phase: float):
 	var swing = sin(phase + t * SWAY_TURNS * TAU) * (1.0 - t)
 	button.scale = Vector2.ONE * p
 	button.rotation = deg_to_rad(SWAY_DEG) * swing
-	button.position = rest + Vector2(SWAY_X * sin(phase - PI / 2 + t * SWAY_TURNS * TAU) * (1.0 - t), RISE * (1.0 - p))
+	var u = t - 1.0
+	var rise = 1.0 + (RISE_BACK + 1.0) * u * u * u + RISE_BACK * u * u  # back-out：0→冲过 1→1
+	button.position = rest + Vector2(SWAY_X * sin(phase - PI / 2 + t * SWAY_TURNS * TAU) * (1.0 - t), RISE * (1.0 - rise))
 
 # 上下浮动：每个按钮起步时间不同，看起来不呆板；但只在停下的位置上方 FLOAT_HEIGHT 内动
 func _start_float(button: Button, rest: Vector2):
 	var float_tween = create_tween().set_loops()
 	float_tween.tween_interval(randf_range(0.0, 0.5))
-	float_tween.tween_property(button, "position:y", rest.y - FLOAT_HEIGHT, 0.6).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	float_tween.tween_property(button, "position:y", rest.y, 0.6).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	float_tween.tween_property(button, "position:y", rest.y - FLOAT_HEIGHT, FLOAT_HALF).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	float_tween.tween_property(button, "position:y", rest.y, FLOAT_HALF).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	upgrade_tweens.append(float_tween)
 
 func _stop_upgrade_tweens():

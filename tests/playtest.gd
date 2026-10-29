@@ -137,12 +137,14 @@ func _kill_and_level_up() -> void:
 
 	var before = _stats()
 	await create_timer(0.3).timeout
+	check(game.upgrade_buttons[0].scale.x < 0.01, "黑幕走到一半前选项还没出来（scale %.3f）" % game.upgrade_buttons[0].scale.x)
+	await create_timer(game.REVEAL_DELAY).timeout
 	var s = game.upgrade_buttons[0].scale.x
-	check(s > 0.05 and s < 0.9, "0.3 s 时选项还在慢慢飘出来（scale %.2f）" % s)
+	check(s > 0.05 and s < 0.9, "出来后 0.3 s 选项还在慢慢飘（scale %.2f）" % s)
 	var r = game.get_node("CanvasLayer/ScreenMask").material.get_shader_parameter("radius")
 	var t = 0.3 / game.REVEAL_TIME
 	check(absf(s - Tween.interpolate_value(0.0, 1.0, t, 1.0, game.REVEAL_TRANS, game.REVEAL_EASE)) < 0.1
-		and absf(r - Tween.interpolate_value(1.5, -1.5, t, 1.0, game.REVEAL_TRANS, game.REVEAL_EASE)) < 0.15,
+		and absf(r - Tween.interpolate_value(1.5, -1.5, t + game.REVEAL_DELAY / game.REVEAL_TIME, 1.0, game.REVEAL_TRANS, game.REVEAL_EASE)) < 0.15,
 		"选项和黑幕按同一条曲线走（scale %.2f，radius %.2f）" % [s, r])
 	game.upgrade_buttons[0].pressed.emit()  # 飘出来途中点也能选
 	await process_frame
@@ -166,7 +168,7 @@ func _upgrade_buttons_stay_put() -> void:
 	var tween_counts = []
 	for round in 6:
 		player.level_up()
-		await create_timer(game.REVEAL_TIME + 0.05).timeout
+		await create_timer(game.REVEAL_DELAY + game.REVEAL_TIME + 0.05).timeout
 		rests.append(game.upgrade_buttons.map(func(b): return [b.position, b.size, b.scale, b.rotation]))
 		game.upgrade_buttons[1].pressed.emit()
 		await process_frame
@@ -258,7 +260,7 @@ func _demo() -> void:
 	_key(KEY_W, true); await create_timer(0.3).timeout; _key(KEY_W, false)
 	_key(KEY_S, true); await create_timer(0.3).timeout; _key(KEY_S, false)
 	await _wait_until(func(): return paused, 6.0)
-	await create_timer(2.6).timeout
+	await create_timer(3.6).timeout
 	game.upgrade_buttons[0].pressed.emit()
 	await create_timer(0.3).timeout
 	_key(KEY_Q, true); await process_frame; _key(KEY_Q, false)
