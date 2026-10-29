@@ -136,8 +136,10 @@ func _kill_and_level_up() -> void:
 	check(texts.size() == 3 and texts[0] != texts[1] and texts[1] != texts[2] and texts[0] != texts[2], "三个不同的选项 %s" % [texts])
 
 	var before = _stats()
-	await create_timer(0.8).timeout
-	game.upgrade_buttons[0].pressed.emit()
+	await create_timer(0.3).timeout
+	var s = game.upgrade_buttons[0].scale.x
+	check(s > 0.2 and s < 0.9, "0.3 s 时选项还在慢慢弹出（scale %.2f）" % s)
+	game.upgrade_buttons[0].pressed.emit()  # 弹出途中点也能选
 	await process_frame
 	check(not panel.visible and not paused, "选完关掉面板、继续游戏")
 	check(_stats() != before, "选的升级生效了（%s）" % texts[0])
@@ -159,7 +161,7 @@ func _upgrade_buttons_stay_put() -> void:
 	var tween_counts = []
 	for round in 6:
 		player.level_up()
-		await create_timer(1.0).timeout
+		await create_timer(game.POP_TIME + 0.2).timeout
 		rests.append(game.upgrade_buttons.map(func(b): return [b.position, b.size, b.scale]))
 		game.upgrade_buttons[1].pressed.emit()
 		await process_frame
@@ -250,7 +252,7 @@ func _demo() -> void:
 	_key(KEY_W, true); await create_timer(0.3).timeout; _key(KEY_W, false)
 	_key(KEY_S, true); await create_timer(0.3).timeout; _key(KEY_S, false)
 	await _wait_until(func(): return paused, 6.0)
-	await create_timer(1.2).timeout
+	await create_timer(2.6).timeout
 	game.upgrade_buttons[0].pressed.emit()
 	await create_timer(0.3).timeout
 	_key(KEY_Q, true); await process_frame; _key(KEY_Q, false)

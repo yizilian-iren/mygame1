@@ -44,6 +44,8 @@ var selected_effects = []
 # 升级的三个按钮停下的位置（相对屏幕中心）：上中、左下、右下。每次都停在这里，只上下浮动。
 const UPGRADE_SLOTS = [Vector2(0, -95), Vector2(-195, 60), Vector2(195, 60)]
 const FLOAT_HEIGHT = 8.0
+const POP_TIME = 2.0  # 弹出时长：慢慢飘出来（I-11）
+const FLOAT_START = 1.4  # 弹出差不多到位后再开始上下浮动
 var upgrade_tweens: Array[Tween] = []
 @onready var upgrade_buttons = [
 	$CanvasLayer/LevelUpPanel/Button,
@@ -148,15 +150,9 @@ func show_level_up():
 		button.scale = Vector2.ZERO
 
 		var pop = create_tween()
-		pop.tween_property(button, "scale", Vector2.ONE, 0.6).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+		pop.tween_property(button, "scale", Vector2.ONE, POP_TIME).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+		pop.parallel().tween_callback(_start_float.bind(button, rest)).set_delay(FLOAT_START)
 		upgrade_tweens.append(pop)
-
-		# 上下浮动：每个按钮起步时间不同，看起来不呆板；但只在停下的位置上方 FLOAT_HEIGHT 内动
-		var float_tween = create_tween().set_loops()
-		float_tween.tween_interval(randf_range(0.0, 0.5))
-		float_tween.tween_property(button, "position:y", rest.y - FLOAT_HEIGHT, 0.6).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-		float_tween.tween_property(button, "position:y", rest.y, 0.6).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-		upgrade_tweens.append(float_tween)
 
 
 	level_up_label.visible = true
@@ -172,6 +168,14 @@ func _on_upgrade_chosen(index: int):
 	hide_screen_mask()
 	get_tree().paused = false
 
+
+# 上下浮动：每个按钮起步时间不同，看起来不呆板；但只在停下的位置上方 FLOAT_HEIGHT 内动
+func _start_float(button: Button, rest: Vector2):
+	var float_tween = create_tween().set_loops()
+	float_tween.tween_interval(randf_range(0.0, 0.5))
+	float_tween.tween_property(button, "position:y", rest.y - FLOAT_HEIGHT, 0.6).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	float_tween.tween_property(button, "position:y", rest.y, 0.6).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	upgrade_tweens.append(float_tween)
 
 func _stop_upgrade_tweens():
 	for t in upgrade_tweens:
