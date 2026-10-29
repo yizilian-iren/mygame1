@@ -138,8 +138,13 @@ func _kill_and_level_up() -> void:
 	var before = _stats()
 	await create_timer(0.3).timeout
 	var s = game.upgrade_buttons[0].scale.x
-	check(s > 0.2 and s < 0.9, "0.3 s 时选项还在慢慢弹出（scale %.2f）" % s)
-	game.upgrade_buttons[0].pressed.emit()  # 弹出途中点也能选
+	check(s > 0.05 and s < 0.9, "0.3 s 时选项还在慢慢飘出来（scale %.2f）" % s)
+	var r = game.get_node("CanvasLayer/ScreenMask").material.get_shader_parameter("radius")
+	var t = 0.3 / game.REVEAL_TIME
+	check(absf(s - Tween.interpolate_value(0.0, 1.0, t, 1.0, game.REVEAL_TRANS, game.REVEAL_EASE)) < 0.1
+		and absf(r - Tween.interpolate_value(1.5, -1.5, t, 1.0, game.REVEAL_TRANS, game.REVEAL_EASE)) < 0.15,
+		"选项和黑幕按同一条曲线走（scale %.2f，radius %.2f）" % [s, r])
+	game.upgrade_buttons[0].pressed.emit()  # 飘出来途中点也能选
 	await process_frame
 	check(not panel.visible and not paused, "选完关掉面板、继续游戏")
 	check(_stats() != before, "选的升级生效了（%s）" % texts[0])
@@ -161,8 +166,8 @@ func _upgrade_buttons_stay_put() -> void:
 	var tween_counts = []
 	for round in 6:
 		player.level_up()
-		await create_timer(game.POP_TIME + 0.2).timeout
-		rests.append(game.upgrade_buttons.map(func(b): return [b.position, b.size, b.scale]))
+		await create_timer(game.REVEAL_TIME + 0.05).timeout
+		rests.append(game.upgrade_buttons.map(func(b): return [b.position, b.size, b.scale, b.rotation]))
 		game.upgrade_buttons[1].pressed.emit()
 		await process_frame
 		tween_counts.append(get_processed_tweens().size())
@@ -174,6 +179,7 @@ func _upgrade_buttons_stay_put() -> void:
 		check(xs.max() - xs.min() < 0.01, "按钮%d x 每次一样" % i)
 		check(ys.min() >= rest.y - game.FLOAT_HEIGHT - 0.01 and ys.max() <= rest.y + 0.01, "按钮%d y 在浮动范围内 %s" % [i, ys])
 		check(rests.all(func(r): return r[i][2].is_equal_approx(Vector2.ONE)), "按钮%d 弹出后 scale=1" % i)
+		check(rests.all(func(r): return is_zero_approx(r[i][3])), "按钮%d 到位后 rotation=0" % i)
 	check(tween_counts.max() <= 1, "选完以后 tween 不累积 %s" % [tween_counts])
 	for b in game.upgrade_buttons:
 		var w = b.get_theme_font("font").get_string_size(tr(b.text), HORIZONTAL_ALIGNMENT_LEFT, -1, b.get_theme_font_size("font_size")).x
