@@ -14,7 +14,7 @@ tools/playtest.sh          # headless 自动试玩，约 15 秒；全部通过�
 
 ## 命令
 
-`G=~/tools/godot/Godot.app/Contents/MacOS/Godot`（m4）
+`G=~/tools/godot/Godot.app/Contents/MacOS/Godot`（mini；gh 在 `~/.local/bin`。都是从官方 release 下载装的，mini 没有 brew）
 
 - 新 checkout 先 `$G --headless --path . --import`（约 1 分钟）。
 - 本机导出：`$G --headless --path . --export-release "Web" Bulids/Web/index.html`，`"Windows Desktop" Bulids/Windows/mygame1.exe`，`"macOS" Bulids/macOS/mygame1-macos.zip`。
