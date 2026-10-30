@@ -8,7 +8,7 @@ Godot 4.5.1 做的横版射击小游戏。网页版：https://yizilian-iren.gith
 tools/playtest.sh          # headless 自动试玩，约 15 秒；全部通过才 exit 0
 ```
 
-`tests/playtest.gd` 会走一遍：键盘移动和换武器、自动射击打死怪、升级弹出三个选项并选一个、升级按钮每次停在同一位置、三种语言切换和字体覆盖、手机的摇杆和 SWITCH、GAME OVER 后重开。改了玩法或界面，就在这里补检查。Godot 遇到脚本语法错误时也 exit 0，所以要用 `tools/playtest.sh`，别直接看 Godot 的退出码。
+`tests/playtest.gd` 会走一遍：键盘移动和换武器、自动射击打死怪、升级弹出三个选项并选一个、升级按钮每次停在同一位置、三种语言切换和字体覆盖、手机的摇杆和 SWITCH、GAME OVER 后重开。改了玩法或界面，就在这里补检查。游戏脚本自己报的 `ERROR:`（如 `Node not found`、发不存在的 signal；backtrace 第一行在 `scripts/` 里）也算不过。Godot 遇到脚本语法错误时也 exit 0，所以要用 `tools/playtest.sh`，别直接看 Godot 的退出码。
 
 要给用户看画面：`tools/record_clip.sh [目录] [en|ja|zh]` 用 Movie Maker 录约 8 秒（会在本机开一个窗口），输出 PNG 帧和 Deck 评审卡片用的 `frames.json`。
 

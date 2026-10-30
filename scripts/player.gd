@@ -12,7 +12,6 @@ var crit_rate = 0
 var remaining = 1
 var fireball_explosion_radius = 20.0 #火球大小
 @export var knockback_strength: float = 5.0
-@onready var upgrade_ui = $"../UpgradeUI"
 
 
 
@@ -159,7 +158,6 @@ func take_damage(amount: int):
 func on_enemy_killed():
 	remaining -= 1
 	print("干掉一个，还剩：", remaining, "个")
-	emit_signal("kills_remaining_changed", remaining)
 	if remaining == 0:
 		level_up()
 
