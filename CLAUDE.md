@@ -10,13 +10,13 @@ tools/playtest.sh          # headless 自动试玩，约 15 秒；全部通过�
 
 `tests/playtest.gd` 会走一遍：键盘移动和换武器、自动射击打死怪、升级弹出三个选项并选一个、升级按钮每次停在同一位置、三种语言切换和字体覆盖、手机的摇杆和 SWITCH、GAME OVER 后重开。改了玩法或界面，就在这里补检查。游戏脚本自己报的 `ERROR:`（如 `Node not found`、发不存在的 signal；backtrace 第一行在 `scripts/` 里）也算不过。Godot 遇到脚本语法错误时也 exit 0，所以要用 `tools/playtest.sh`，别直接看 Godot 的退出码。
 
-要给用户看画面：`tools/record_clip.sh [目录] [en|ja|zh]` 用 Movie Maker 录约 8 秒（会在本机开一个窗口），输出 PNG 帧和 Deck 评审卡片用的 `frames.json`。
+要给用户看画面：`tools/record_clip.sh [目录] [en|ja|zh] [WxH] [touch]` 用 Movie Maker 录约 8 秒（窗口大小默认 1152x648；iPhone 横屏用 1404x648，加 `touch` 显示摇杆和 SWITCH）（会在本机开一个窗口），输出 PNG 帧和 Deck 评审卡片用的 `frames.json`。
 
 ## 命令
 
 `G=~/tools/godot/Godot.app/Contents/MacOS/Godot`（mini；gh 在 `~/.local/bin`。都是从官方 release 下载装的，mini 没有 brew）
 
-- 新 checkout 先 `$G --headless --path . --import`（约 1 分钟）。
+- 新 checkout 先 `$G --headless --path . --import`（约 1 分钟）。pull 来了新素材也要 import，否则脚本加载失败、Godot 挂着不退出；`tools/playtest.sh` 和 `tools/record_clip.sh` 开头会自己 import（已 import 过的约 2 秒），playtest 还有 120 秒超时。
 - 本机导出：`$G --headless --path . --export-release "Web" Bulids/Web/index.html`，`"Windows Desktop" Bulids/Windows/mygame1.exe`，`"macOS" Bulids/macOS/mygame1-macos.zip`。
 - Windows 版放到 home4070 试玩：`tools/deploy_home4070.sh`（本机导出）或 `tools/deploy_home4070.sh v0.2`（用 Release 里的）。
 

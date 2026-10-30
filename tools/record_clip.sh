@@ -13,6 +13,7 @@ RES=${3:-1152x648}
 TOUCH=${4:+--touch}
 FPS=30
 rm -rf "$OUT" && mkdir -p "$OUT/raw"
+"$GODOT" --headless --path . --import > /dev/null 2>&1  # 没 import 的素材会让 demo 卡住、一直录下去
 "$GODOT" --path . --rendering-driver opengl3 --write-movie "$OUT/raw/frame.png" --fixed-fps $FPS \
 	--resolution "$RES" -s tests/playtest.gd -- --demo --lang=$LANG_ARG $TOUCH > "$OUT/godot.log" 2>&1
 python3 - "$OUT" $FPS <<'PY'
