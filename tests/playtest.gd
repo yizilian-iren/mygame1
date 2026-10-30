@@ -25,6 +25,8 @@ func _initialize() -> void:
 	var lang_arg = Array(OS.get_cmdline_user_args()).filter(func(a): return a.begins_with("--lang="))
 	i18n._apply(lang_arg[0].substr(7) if lang_arg else "en")
 	if demo:
+		if "--touch" in OS.get_cmdline_user_args():  # 录手机画面：摇杆和 SWITCH 也显示出来
+			game.get_node("TouchControls")._show()
 		await _demo()
 		quit()
 		return
@@ -35,6 +37,7 @@ func _initialize() -> void:
 	await _upgrade_buttons_stay_put()
 	await _languages()
 	await _touch_controls()
+	await _aspect_ratios()
 	await _game_over_and_restart()
 
 	if not had_cfg:
@@ -236,6 +239,31 @@ func _touch_controls() -> void:
 	check(tc.stick_touch == -1, "右半屏不起摇杆")
 	_touch(2, Vector2(size.x * 0.75, 450), false)
 	check(game.get_node("CanvasLayer/Label").text == "HINT_TOUCH", "提示换成手机版")
+
+
+# ---- 手机横屏等不同比例：不留黑边，HUD 和按钮都在屏内（I-15） ----
+func _aspect_ratios() -> void:
+	var win = root.size
+	var tc = game.get_node("TouchControls")
+	var cam = game.get_node("Camera2D")
+	for c in [[Vector2i(2532, 1170), "19.5:9"], [Vector2i(1024, 768), "4:3"]]:
+		root.size = c[0]
+		await _frames(3)
+		var view = root.get_visible_rect()
+		var aspect = float(c[0].x) / c[0].y
+		check(absf(view.size.x / view.size.y - aspect) < 0.01, "%s：画面和窗口同比例，没有黑边 %s" % [c[1], view.size])
+		var hud_ok = true
+		for path in ["CanvasLayer/Status", "CanvasLayer/LangSwitch", "CanvasLayer/Label"]:
+			hud_ok = hud_ok and view.encloses(game.get_node(path).get_global_rect())
+		check(hud_ok, "%s：状态面板、语言按钮、提示都在屏内" % c[1])
+		check(view.has_point(tc.button_pos) and view.has_point(tc.stick_rest + Vector2(0, tc.STICK_RADIUS)), "%s：SWITCH 和摇杆在屏内" % c[1])
+		check(game.get_node("CanvasLayer/ScreenMask").get_global_rect().encloses(view), "%s：升级时的遮罩盖满全屏" % c[1])
+		# 世界里看得到的范围都铺着背景（背景 4 列 × 3 排、240×280 一张，中心在镜头处）
+		var half = view.size / 2 / cam.zoom
+		check(half.x <= 480 and half.y <= 420, "%s：背景盖得住看得到的世界 ±%s" % [c[1], half])
+		check(game.EnemyScript.view_half_width(game) > half.x - 1, "%s：怪从屏幕外出来" % c[1])
+	root.size = win
+	await _frames(3)
 
 
 # ---- GAME OVER 后自己重开 ----

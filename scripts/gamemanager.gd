@@ -41,6 +41,8 @@ var upgrades = [
 ]
 
 var selected_effects = []
+const EnemyScript = preload("res://scripts/Enemy.gd")
+
 # 升级的三个按钮停下的位置（相对屏幕中心）：上中、左下、右下。每次都停在这里，只上下浮动。
 const UPGRADE_SLOTS = [Vector2(0, -95), Vector2(-195, 60), Vector2(195, 60)]
 const FLOAT_HEIGHT = 14.0
@@ -119,7 +121,8 @@ func spawn_enemy():
 			
 	var scene = pool[randi() % pool.size()]
 	var enemy = scene.instantiate()
-	enemy.position = Vector2(260, randf_range(45, 130))
+	# 从屏幕右边外面一点出来；屏幕比 16:9 宽时（stretch aspect = expand）跟着往外
+	enemy.position = Vector2(EnemyScript.view_half_width(self) + 20, randf_range(45, 130))
 	enemy.player = player
 	add_child(enemy)
 

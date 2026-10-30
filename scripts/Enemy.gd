@@ -16,7 +16,7 @@ var is_dead = false
 func _process(delta):
 	if not is_dead:
 		position += Vector2(speed, 0) * delta
-	if position.x < -300:
+	if position.x < -view_half_width(self) - 60:
 		queue_free()
 
 
@@ -84,3 +84,10 @@ func die():
 		player.on_enemy_killed()
 	await get_tree().create_timer(0.6).timeout
 	queue_free()
+
+
+# 看得到的世界有多宽的一半（以镜头为中心）。stretch aspect 是 expand，手机横屏比 16:9 宽时这个会变大。
+static func view_half_width(node: Node) -> float:
+	var cam := node.get_viewport().get_camera_2d()
+	var zoom := cam.zoom.x if cam else 1.0
+	return node.get_viewport().get_visible_rect().size.x / 2 / zoom

@@ -125,6 +125,46 @@ texture = ExtResource("1_uwrxv")
 position = Vector2(360, 0)
 texture = ExtResource("1_uwrxv")
 
+[node name="background_top1" type="Sprite2D" parent="."]
+position = Vector2(-360, -280)
+texture = ExtResource("1_uwrxv")
+flip_v = true
+
+[node name="background_top2" type="Sprite2D" parent="."]
+position = Vector2(-120, -280)
+texture = ExtResource("1_uwrxv")
+flip_v = true
+
+[node name="background_top3" type="Sprite2D" parent="."]
+position = Vector2(120, -280)
+texture = ExtResource("1_uwrxv")
+flip_v = true
+
+[node name="background_top4" type="Sprite2D" parent="."]
+position = Vector2(360, -280)
+texture = ExtResource("1_uwrxv")
+flip_v = true
+
+[node name="background_bottom1" type="Sprite2D" parent="."]
+position = Vector2(-360, 280)
+texture = ExtResource("1_uwrxv")
+flip_v = true
+
+[node name="background_bottom2" type="Sprite2D" parent="."]
+position = Vector2(-120, 280)
+texture = ExtResource("1_uwrxv")
+flip_v = true
+
+[node name="background_bottom3" type="Sprite2D" parent="."]
+position = Vector2(120, 280)
+texture = ExtResource("1_uwrxv")
+flip_v = true
+
+[node name="background_bottom4" type="Sprite2D" parent="."]
+position = Vector2(360, 280)
+texture = ExtResource("1_uwrxv")
+flip_v = true
+
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(2.405, 2.405)
 metadata/_edit_lock_ = true
@@ -215,11 +255,14 @@ process_mode = 3
 
 [node name="game over label" type="Label" parent="CanvasLayer"]
 visible = false
-anchors_preset = 10
+anchors_preset = 14
+anchor_top = 0.5
 anchor_right = 1.0
-offset_top = 255.0
-offset_bottom = 375.0
+anchor_bottom = 0.5
+offset_top = -69.0
+offset_bottom = 51.0
 grow_horizontal = 2
+grow_vertical = 2
 theme_override_constants/outline_size = 60
 theme_override_fonts/font = ExtResource("15_uifont")
 theme_override_font_sizes/font_size = 120
@@ -231,10 +274,11 @@ vertical_alignment = 1
 process_mode = 3
 z_index = 10
 material = SubResource("ShaderMaterial_dinhu")
-offset_left = 0.999992
-offset_right = 1162.0
-offset_bottom = 638.0
-scale = Vector2(0.991805, 1.01853)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 color = Color(0, 0, 0, 0.407843)
 
